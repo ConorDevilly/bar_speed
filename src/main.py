@@ -39,7 +39,7 @@ def main():
 
     tracker = BarbellTracker(args.tracker.upper(), debug_mode=args.debug)
     tracker.load_video(args.video_path)
-    fps = tracker.get_video_fps()
+    tracker.get_video_fps()
     init_frame, init_pos, cm_mult = tracker.detect_barbell_pos(cascade)
     tracker.track(init_frame, init_pos)
 

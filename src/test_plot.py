@@ -1,5 +1,5 @@
 import unittest
-from mock import patch, MagicMock, mock_open
+from mock import patch, mock_open
 from plot import BarGraph
 
 
@@ -18,7 +18,6 @@ class TestBarGraph(unittest.TestCase):
             'INFO:root:Frame 5. Distance moved: 0'
         ]
         self.bad_log_data = ['random', 'test', 'text']
-        #with patch('__builtin__.open', mock_open(read_data = self.log_data)) as mock_file:
         with patch('__builtin__.open', mock_open()) as mock_file:
             mock_file.return_value.readlines.return_value = self.log_data
             self.bar_graph.load_data('a_path')
