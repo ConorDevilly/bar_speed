@@ -107,6 +107,7 @@ class BarGraph():
 
     def plot_graph(self, data, title, ylabel='Centimeters', xlabel='Seconds'):
         """Add data to a graph"""
+        # Calculate total points needed on x axis
         total_seconds = len(data) / 2
         # Add an extra data point if there entries left over
         if len(data) % 2 == 1:
@@ -127,7 +128,7 @@ class BarGraph():
         self.plot_acceleration_graph()
 
     def show_graph(self):
-        """Display any loaded graphs"""
+        """Display loaded graphs"""
         plt.tight_layout()
         plt.show()
 

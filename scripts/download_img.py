@@ -5,12 +5,19 @@ import logging as log
 import numpy as np
 
 
+"""
+The purpose of this script is to download a list of images and resize them
+Parts of this script are based off the following tutorial:
+    [1] Python Programming Tutorials,
+        https://pythonprogramming.net/haar-cascade-object-detection-python-opencv-tutorial/,
+        Date Accessed: Oct 2017
+"""
+
+
+# TODO: These should really be passed from command-line
 POS_IMG_LIST = 'barbell_img.txt'
-#POS_IMG_DIR = 'pos'
 POS_IMG_DIR = 'pos_png'
-NEG_IMG_LIST = 'people_leader_img.txt'
-NEG_IMG_DIR = 'neg'
-IMG_SUFFIX = '.jpeg'
+IMG_SUFFIX = '.png'
 WIDTH_SCALE_SIZE = 32
 HEIGHT_SCALE_SIZE = 18
 
@@ -40,7 +47,9 @@ def generate_descriptors(dirname):
     Params:
         dirname: Path to directory containing images
     """
+    # Create a list of entries in form <dir_name>/<img_name>
     entries = [ dirname + '/' + f for f in os.listdir(dirname) ]
+    # Write list to file
     with open(dirname + '_desc.txt', 'w') as f:
         for entry in entries:
             f.write(entry + '\n')
@@ -55,13 +64,16 @@ def remove_invalid(invalid_img_path, dir_to_check):
         invalid_img_path: Path to the invalid image example
         dir_to_check: The directory containing images to compare
     """
+    """Taken from [1] but rewritten to be more efficient & reliable"""
     invalid_img = cv2.imread(invalid_img_path)
     for f in os.listdir(dir_to_check):
         try:
             img = cv2.imread(dir_to_check + '/' + f)
+            # Remove image if they match the given invalid image
             if invalid_img.shape == img.shape and not(np.bitwise_xor(invalid_img, img).any()):
                 log.info('Deleting: ' + f)
                 os.remove(dir_to_check + '/' + f)
+        # Also delete unreadable images
         except AttributeError:
             log.warn(f + ' is corrupted / not readable')
             log.info('Deleting: ' + f)
@@ -76,6 +88,7 @@ def store_img(dirname, img_list):
         dirname: Path of directory to store images
         img_list: Path to text file of image URLs
     """
+    """General idea for this function is based off [1] but completely rewritten"""
     # Check if directory exists, if not make it
     if not os.path.exists(dirname):
         log.info('Creating directory: ' + dirname)
@@ -105,14 +118,11 @@ def store_img(dirname, img_list):
 
 
 def main():
+    configure_logging()
+    store_img(POS_IMG_DIR, POS_IMG_LIST)
+    remove_invalid(POS_IMG_LIST, i)
     resize_imgs(POS_IMG_DIR, WIDTH_SCALE_SIZE, HEIGHT_SCALE_SIZE)
-    #configure_logging()
-    #store_img(POS_IMG_DIR, POS_IMG_LIST)
-    #store_img(NEG_IMG_DIR, NEG_IMG_LIST)
-    #for i in [ POS_IMG_DIR, NEG_IMG_DIR ]:
-    #    remove_invalid('invalid.jpeg', i)
-    #    resize_imgs(i, 100, 100)
-    #    generate_descriptors(i)
+    generate_descriptors(POS_IMG_DIR)
 
 
 if __name__ == '__main__':

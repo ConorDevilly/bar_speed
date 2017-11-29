@@ -35,6 +35,10 @@ class BarbellTracker:
             cv2.namedWindow('Barbell_Tracker', cv2.WINDOW_NORMAL)
 
         while(self.video.isOpened()):
+            """
+            Based off: https://pythonprogramming.net/haar-cascade-object-detection-python-opencv-tutorial/
+            Using tracker instead of constant detection
+            """
             # Read a frame
             retval, frame = self.video.read()
             if not retval:
@@ -98,6 +102,7 @@ class BarbellTracker:
             if circles is not None:
                 # If one circle detected, track current position
                 if len(circles[0]) == 1:
+                    # Extract diameter of circle to find cm_multiplier
                     pixel_diameter = circles[0, :][0][2] * 2
                     cm_multiplier = self._get_cm_per_pixel(pixel_diameter)
                     logging.info('CM Multiplier: {}'.format(cm_multiplier))
@@ -127,6 +132,10 @@ class BarbellTracker:
         Returns:
             List: circles: A list of circles in the image
         '''
+        """
+        Based off:
+            http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_houghcircles/py_houghcircles.html
+        """
         grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         circles = cv2.HoughCircles(grey_img, cv2.HOUGH_GRADIENT, 1, 20,
                                    param1=50, param2=30, minRadius=0, maxRadius=0)
