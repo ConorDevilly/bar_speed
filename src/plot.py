@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import argparse
-from scipy.interpolate import spline
 import numpy as np
-import math
 
 
 class BarGraph():
@@ -145,6 +143,7 @@ def setup_parser():
                         choices=['speed', 'velocity', 'acceleration', 'all'])
     return parser
 
+
 def main():
     parser = setup_parser()
     args = parser.parse_args()
@@ -158,6 +157,7 @@ def main():
     }.get(args.graph, 'velocity')
     plot_graph()
     bar_graph.show_graph()
+
 
 if __name__ == '__main__':
     main()
