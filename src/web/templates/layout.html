@@ -9,6 +9,21 @@
 	</head>
 
 	<body>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li><a href="{{ url_for('home') }}">Home</a></li>
+					{% if g.user.is_authenticated %}
+						<li><a href="{{ url_for('upload') }}">Upload</a></li>
+						<li><a href="{{ url_for('graphs') }}">Graphs</a></li>
+						<li><a href="{{ url_for('logout') }}">Logout</a></li>
+					{% else %}
+						<li><a href="{{ url_for('login') }}">Login</a></li>
+						<li><a href="{{ url_for('register') }}">Register</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</nav>
 		<div id="main" class="container">
 			{% with messages = get_flashed_messages() %}
 				{% if messages %}

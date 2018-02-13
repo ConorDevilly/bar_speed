@@ -1,14 +1,15 @@
-from flask import Flask, request, render_template, flash, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, render_template, flash, redirect, url_for, g
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.utils import secure_filename
 import boto3, botocore
 from config import S3_KEY, S3_SECRET, S3_BUCKET
+from models.User import User
+from DB import db
 
 
 app = Flask(__name__)
 app.config.from_object('config')
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # Setup Flask Login
 login_manager = LoginManager()
@@ -19,9 +20,17 @@ login_manager.login_view = 'login'
 def load_user(id):
     return User.query.get(int(id))
 
-@app.route('/')
-def hello_world():
-    return 'Hello World'
+@app.before_request
+def before_request():
+    g.user = current_user
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('home.html')
+
+@app.route('/graphs', methods=['GET'])
+def graphs():
+    return render_template('graphs.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -74,9 +83,10 @@ def upload():
     if file and allowed_file(file.filename):
         file.filename = secure_filename(file.filename)
         output = upload_file_to_s3(file, app.config["S3_BUCKET"])
-        return str(output)
-    flash("Error uploading file")
-    return redirect(request.url)
+        flash("File uploaded successfully")
+    else:
+        flash("Error uploading file")
+    return redirect(url_for('upload'))
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
@@ -94,33 +104,8 @@ def upload_file_to_s3(file, bucket_name):
                 file.filename
         )
     except Exception as e:
-        print(e)
+        raise(e)
     return "{}{}".format(app.config["S3_LOCATION"], file.filename)
-
-
-class User(db.Model):
-    __tablename__ = "User"
-    id = db.Column('uid', db.Integer, primary_key=True)
-    username = db.Column('username', db.String, unique=True, index=True)
-    password = db.Column('password', db.String)
-    email = db.Column('email', db.String, unique=True, index=True)
-
-    def __init__(self, username, password, email):
-        self.username = username
-        self.password = password
-        self.email = email
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return unicode(self.id)
 
 
 if __name__ == '__main__':
