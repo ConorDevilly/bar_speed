@@ -54,14 +54,20 @@ def graph_vid(vid):
     video = Video.query.filter_by(vid=vid).first()
     vid_dist_data = BarDistance.query.filter_by(vid=video.vid)
     vid_speed_data = []
+    vid_acceleration_data = []
     reps = 1 # TODO
+    # Generate speed data
     prev_dist = 0
     for entry in vid_dist_data:
         curr_dist = entry.distance * video.cm_multiplier
         dist_dif = (curr_dist - prev_dist)
         vid_speed_data.append(abs(dist_dif))
         prev_dist = curr_dist
-
+    # Generate acceleration data
+    prev_speed = 0
+    for entry in vid_speed_data:
+        vid_acceleration_data.append(abs(entry - prev_speed))
+        prev_speed = entry
     average_speed = str(round(mean(vid_speed_data), 2))
     percent_result = db.engine.execute(text(
                                 "SELECT percent FROM VelocityPercentChart WHERE reps = :reps ORDER BY ABS( velocity - :average_speed ) LIMIT 1;"
@@ -76,6 +82,7 @@ def graph_vid(vid):
             'id': video.vid,
             'dist_data': vid_dist_data,
             'speed_data': vid_speed_data,
+            'acceleration_data': vid_acceleration_data,
             'fps': video.fps,
             'weight': video.weight,
             'cm_multiplier': video.cm_multiplier,
