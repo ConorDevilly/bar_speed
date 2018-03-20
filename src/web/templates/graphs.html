@@ -1,5 +1,67 @@
 {% extends "layout.html" %}
 {% block body %}
-	This is the website graph page that needs to be made
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+
+	<div id="videos-wrapper" class="d-inline">
+		{% if video_list %}
+			<nav id="video-nav" class="navbar navbar-default">
+				<ul id="videos-menu" class="nav nav-pills nav-stacked">
+					{% for video in video_list %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('graph_vid', vid=video.vid) }}">
+								{{ video.s3_path.split('/')[2] }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		{% endif %}
+	</div>
+
+
+	{% if vid_data %}
+	<div id="graph-wrapper" class="d-inline">
+		<p>Weight: {{ vid_data['weight'] }}</p>
+		<p>Average Speed: {{ vid_data['average_speed'] }}</p>
+		<p>Estimated 1RM: {{ vid_data['max_prediction'] }}</p>
+		<canvas id="vid_graph"></canvas>
+		<script>
+			// Construct array of data
+			var data = [];
+			var labels = [];
+			var label_ctr = 1;
+			var ctr = 1;
+			var fps = {{ vid_data['fps'] }}
+			var temp_store = 0;
+
+			{% for v in vid_data['speed_data'] %}
+				temp_store += {{ v }}
+				if(ctr % fps == 0){
+					//data.push(temp_store / fps);
+					data.push(temp_store);
+					labels.push(label_ctr++);
+					temp_store = 0;
+				}
+				ctr++;
+			{% endfor %}
+
+			var context = $("#vid_graph");
+			var vid_graph = new Chart(context, {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [{
+						//label: "Distance travelled",
+						label: "Speed",
+						borderColor: '#3e95cd',
+						fill: true,
+						data: data,
+						spanGaps: true,
+					}]
+				}
+			});
+		</script>
+	</div>
+	{% endif %}
 {% endblock %}
 

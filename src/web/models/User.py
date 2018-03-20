@@ -6,6 +6,7 @@ class User(db.Model):
     username = db.Column('username', db.String, unique=True, index=True)
     password = db.Column('password', db.String)
     email = db.Column('email', db.String, unique=True, index=True)
+    videos = db.relationship('Video', backref='user', lazy=True)
 
     def __init__(self, username, password, email):
         self.username = username

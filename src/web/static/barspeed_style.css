@@ -1,0 +1,12 @@
+#videos-wrapper{
+	display: inline-block;
+	float: left;
+}
+
+#graph-wrapper{
+	overflow: hidden;
+	/* 
+	width: 50%; 
+	float: left;
+	*/
+}

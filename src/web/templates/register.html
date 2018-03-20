@@ -1,7 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
+	<script language='javascript' type='text/javascript'>
+		function checkRegistration(form){
+			if(form.password.value != form.password_conf.value){
+				//TODO: Flash alert on screen
+				alert("Passwords do not match");
+				return false;
+			}
+			return true;
+		}
+	</script>
 
-	<form action="" method=POST class="form-horizontal">
+	<form action="" method=POST class="form-horizontal" onsubmit="return checkRegistration(this)">
 		<h1>Register</h1>
 		<div class="control-group">
 			<div class="control">
