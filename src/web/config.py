@@ -1,7 +1,12 @@
 import os
 
 # SQLAlchemy config
-SQLALCHEMY_DATABASE_URI = 'mysql://barbell_speed:4UkasFaNcBidrqy2vHew@localhost:3306/barbell_speed'
+SQL_USER = os.environ.get("SQL_USER")
+SQL_PASS = os.environ.get("SQL_PASS")
+SQL_SERVER = os.environ.get("SQL_SERVER")
+SQL_PORT = os.environ.get("SQL_PORT")
+SQL_DB = os.environ.get("SQL_DB")
+SQLALCHEMY_DATABASE_URI = 'mysql://{}:{}@{}:{}/{}'.format(SQL_USER, SQL_PASS, SQL_SERVER, SQL_PORT, SQL_DB)
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 # TODO: DO PROPERLY
