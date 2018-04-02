@@ -184,4 +184,4 @@ def upload_file_to_s3(file, bucket_name):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run('0.0.0.0')
