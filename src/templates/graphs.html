@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% block body %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+
+	<div id="video-nav-wrapper" class="d-inline-block">
+	{% if video_list %}
+		<nav id="video-nav" class="navbar navbar-default sidebar" role="navigation">
+			<ul id="videos-menu" class="nav nav-pills nav-stacked">
+				{% for video in video_list %}
+					<li>
+						<a href="{{ url_for('graph_vid', vid=video.vid) }}">
+							{{ video.s3_path.split('/')[2] }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</nav>
+	{% endif %}
+	</div>
+
+	<div id="button-wrapper">
+	<button type="button" class="btn btn-primary btn-lg m-2" data-toggle="modal" data-target="#modal-upload">New Video</button>
+	<div class="modal fade" id="modal-upload" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					Upload a video
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<form action="/upload" method="POST" enctype="multipart/form-data">
+						Select Video: <input type="file" id="user_file" name="user_file" />
+						<br />
+						Weight: <input type="number" step="0.01" name="weight" required />kg
+						<br />
+						<br />
+						<button type="submit" class="btn btn-primary">Upload</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% if vid_data %}
+	<button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#modal-delete">Delete</button>
+	<div class="modal fade" id="modal-delete" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					Delete video
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					Are you sure you wish to delete this video?
+					<br />
+					<br />
+					<button type="submit" class="btn btn-danger" onclick="exec_delete('/graphs/{{ vid_data.id}}')">Delete</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		function exec_delete(url){
+			req = new XMLHttpRequest();
+			req.onreadystatechange = function(){
+				if(req.status == 200){
+					window.location = "http://ec2-34-244-107-46.eu-west-1.compute.amazonaws.com:5000/graphs";
+				}
+			}
+			req.open("DELETE", url, true);
+			req.send(null);
+		}
+	</script>
+
+	<video width=400 height=500 controls id="video-wrapper">
+		<source src="http://d3ukplmuy4hjog.cloudfront.net/{{ vid_data['s3_path'][vid_data['s3_path'].find('/')+1:] }}" type="video/mp4">
+		Browser does not support video
+	</video>
+	{% if vid_data['max_prediction'] != 0 %}
+	<div id="graph-wrapper" class="d-inline">
+		<div id="vid_summary_container">
+			<table id="stats_table">
+				<th>Video Statistics</th>
+				<tr>
+					<td>Weight Lifted:</td>
+					<td class="result">{{ vid_data['weight'] }}kg</td>
+				</tr>
+				<tr>
+					<td>Average Speed:</td>
+					<td class="result">{{ '%0.2f'| format(vid_data['average_speed']|float) }}cm/s</td>
+				</tr>
+				<tr>
+					<td><b>Estimated 1RM:</b></td>
+					<td class="result"><b>{{ vid_data['max_prediction'] }}kg</b></td>
+				</tr>
+			</table>
+		</div>
+
+		<canvas id="vid_graph"></canvas>
+		<script>
+			var speed_data = [];
+			var acceleration_data = [];
+			var labels = [];
+
+			var label_ctr = 1;
+			var fps = {{ vid_data['fps']|int }}
+			var ctr = 1;
+			var temp_store = 0;
+
+			// Convert speed data to javascript array
+			{% for v in vid_data['speed_data'] %}
+				speed_data.push({{ v }});
+				labels.push(label_ctr++);
+			{% endfor %}
+
+			// Convert acceleration data to javascript array
+			{% for v in vid_data['acceleration_data'] %}
+				acceleration_data.push({{ v }});
+			{% endfor %}
+
+			var context = $("#vid_graph");
+			var data = speed_data;
+			var vid_graph = new Chart(context, {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [{
+						label: 'Speed',
+						borderColor: '#3e95cd',
+						fill: true,
+						data: speed_data,
+						spanGaps: true,
+					},{
+						label: 'Acceleration',
+						borderColor: '#f45c42',
+						fill: true,
+						data: acceleration_data,
+						spanGaps: true,
+					}]
+				}
+			});
+		</script>
+	</div>
+	{% else %}
+	<div> Error calculating speed in video</div>
+	{% endif %}
+
+	{% else %}
+	</div>
+	{% endif %}
+{% endblock %}

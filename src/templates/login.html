@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block body %}
+	<script language='javascript' type='text/javascript'>
+		function checkRegistration(form){
+			if(form.password.value != form.password_conf.value){
+				alert("Passwords do not match");
+				return false;
+			}
+			return true;
+		}
+	</script>
+
+	<div class="text-center">
+		<form action="" method=POST class="form-horizontal">
+			<h1>Login</h1>
+			<div class="control-group">
+				<div class="control">
+					<input type="text" id="username" name="username" class="input-xlarge"
+							placeholder="Username" value="{{request.form.username}}"
+							required />
+				</div>
+				<div class="control">
+					<input type="password" id="password" name="password" class="input-xlarge"
+							placeholder="Password" value="{{request.form.password}}"
+							required />
+				</div>
+			</div>
+			<br />
+			<button type="submit" class="btn btn-primary btn-lg">Login</button>
+			<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal-upload">Register</button>
+		</form>
+
+	<div id="registration-wrapper">
+		<div class="modal fade" id="modal-upload" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						Register
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						<form action="/register" method=POST  onsubmit="return checkRegistration(this)">
+							<div class="container col-md-12">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="r_username">Username:</label>
+									</div>
+									<div class="col-md-4">
+										<input type="text" id="r_username" name="r_username" 
+												class="input-xlarge" placeholder="Username"
+												value="{{request.form.username}}" required
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<label for="r_password">Password:</label>
+									</div>
+									<div class="col-md-4">
+										<input type="password" id="r_password" name="r_password" 
+											class="input-xlarge" placeholder="Password" 
+											value="{{request.form.password}}" required
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<label for="password_conf">Confirm Password:</label>
+									</div>
+									<div class="col-md-4">
+										<input type="password" id="password_conf" name="password_conf" 
+												class="input-xlarge" 
+												placeholder="Confirm Password"
+												value="{{request.form.password_conf}}"
+												required
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<label for="email">Email:</label>
+									</div>
+									<div class="col-md-4">
+										<input type="email" id="email" name="email" class="input-xlarge"
+											placeholder="Email" value="{{request.form.email}}"
+											required
+										/>
+									</div>
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary">Register</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						</form>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+{% endblock %}

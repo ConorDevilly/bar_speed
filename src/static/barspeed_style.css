@@ -1,0 +1,18 @@
+
+#video-nav-wrapper{
+	display: inline-block;
+	float: left;
+	margin-right: 10px;
+}
+
+#video-nav-wrapper a{
+	font-size: 16px;
+}
+
+#video-wrapper{
+	float: right;
+}
+
+#graph-wrapper{
+	overflow: hidden;
+}

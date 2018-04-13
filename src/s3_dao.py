@@ -28,7 +28,7 @@ class S3DAO:
             self.s3_client.upload_fileobj(
                     file,
                     bucket_name,
-                    file_path
+		    file_path
             )
         except Exception as e:
             raise(e)
@@ -36,10 +36,9 @@ class S3DAO:
     def delete_file_in_s3(self, bucket_name, file_path):
 	print(file_path)
 	try:
-           self.s3_client.delete_object(
-               Bucket=bucket_name,
-               Key=file_path
-           )
+	   self.s3_client.delete_object(
+		   Bucket=bucket_name,
+		   Key=file_path
+	   )
 	except Exception as e:
-            raise(e)
-
+	    raise(e)

@@ -57,6 +57,6 @@ class JobCoordinator:
 	dist_ctr = 1
 	for distance in dist_list:
 		bar_distance =  BarDistance(video.vid, dist_ctr, distance)
-		db_session.add(bar_distance)
+		db_session.add(bar_distance)	
 		dist_ctr += 1
-	db_session.commit()
+	db_session.commit()	
