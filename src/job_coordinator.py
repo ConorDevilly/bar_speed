@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from tracker import BarbellTracker
 from web.models.Video import Video
 from web.models.BarDistance import BarDistance
+from web.models.User import User
 from s3_dao import S3DAO
 
 
