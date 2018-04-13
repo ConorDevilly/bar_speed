@@ -1,5 +1,6 @@
 from web.DB import db
 
+
 class VelocityPercentChart(db.Model):
     __tablename__ = "VelocityPercentChart"
     reps = db.Column('reps', db.Integer, primary_key=True)

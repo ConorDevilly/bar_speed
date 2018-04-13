@@ -1,7 +1,7 @@
 from web.DB import db
 
+
 class Video(db.Model):
-    # TODO: Remove RPE
     __tablename__ = "Video"
     vid = db.Column('vid', db.Integer, primary_key=True)
     uid = db.Column('uid', db.Integer, db.ForeignKey('User.uid'), nullable=False)

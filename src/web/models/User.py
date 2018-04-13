@@ -1,5 +1,6 @@
 from web.DB import db
 
+
 class User(db.Model):
     __tablename__ = "User"
     id = db.Column('uid', db.Integer, primary_key=True)
@@ -24,4 +25,3 @@ class User(db.Model):
 
     def get_id(self):
         return unicode(self.id)
-

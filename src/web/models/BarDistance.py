@@ -1,5 +1,6 @@
 from web.DB import db
 
+
 class BarDistance(db.Model):
     __tablename__ = "BarDistance"
     vid = db.Column('vid', db.Integer, db.ForeignKey('Video.vid'), primary_key=True)

@@ -1,5 +1,6 @@
 import boto3
 
+
 class S3DAO:
     '''
     Object to interact with AWS S3
@@ -28,17 +29,17 @@ class S3DAO:
             self.s3_client.upload_fileobj(
                     file,
                     bucket_name,
-		    file_path
+                    file_path
             )
         except Exception as e:
             raise(e)
 
     def delete_file_in_s3(self, bucket_name, file_path):
-	print(file_path)
-	try:
-	   self.s3_client.delete_object(
-		   Bucket=bucket_name,
-		   Key=file_path
-	   )
-	except Exception as e:
-	    raise(e)
+        print(file_path)
+        try:
+            self.s3_client.delete_object(
+                Bucket=bucket_name,
+                Key=file_path
+            )
+        except Exception as e:
+            raise(e)
