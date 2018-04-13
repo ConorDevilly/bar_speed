@@ -20,9 +20,9 @@ class QueueListener:
             if vid_path is not None:
                 self.start_coordinator(vid_path)
                 self.sqs_client.delete_message(
-                            QueueUrl = self.queue_url,
-                            ReceiptHandle = message['Messages'][0]['ReceiptHandle']
-                        )
+					QueueUrl = self.queue_url,
+                                    ReceiptHandle = message['Messages'][0]['ReceiptHandle']
+            )
 
     def start_coordinator(self, vid_path):
         self.coordinator.start(vid_path)
@@ -40,6 +40,6 @@ class QueueListener:
             msg_body = json.loads(msg['Messages'][0]['Body'])
             vid_path = msg_body['Records'][0]['s3']['object']['key']
         except KeyError:
-            # Key error means no message were found
             pass
         return vid_path
+

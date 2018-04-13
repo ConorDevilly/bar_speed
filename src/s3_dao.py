@@ -5,7 +5,6 @@ class S3DAO:
     Object to interact with AWS S3
     '''
     def __init__(self, access_key, secret_key):
-        # TODO: Take Bucket
         self.s3_client = boto3.client(
                     's3',
                     aws_access_key_id=access_key,
@@ -18,7 +17,7 @@ class S3DAO:
         except Exception as e:
             raise(e)
 
-    def upload_file_to_s3(self, file, bucket_name):
+    def upload_file_to_s3(self, file, bucket_name, file_path):
         '''
         Uploads a file to S3
         Params:
@@ -29,8 +28,18 @@ class S3DAO:
             self.s3_client.upload_fileobj(
                     file,
                     bucket_name,
-                    file.filename
+                    file_path
             )
         except Exception as e:
+            raise(e)
+
+    def delete_file_in_s3(self, bucket_name, file_path):
+	print(file_path)
+	try:
+           self.s3_client.delete_object(
+               Bucket=bucket_name,
+               Key=file_path
+           )
+	except Exception as e:
             raise(e)
 
