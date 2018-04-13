@@ -9,11 +9,11 @@ SQL_DB = os.environ.get("SQL_DB")
 SQLALCHEMY_DATABASE_URI = 'mysql://{}:{}@{}:{}/{}'.format(SQL_USER, SQL_PASS, SQL_SERVER, SQL_PORT, SQL_DB)
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-# TODO: DO PROPERLY
 SECRET_KEY = 'a_secret_key'
 DEBUG = True
 
-ALLOWED_EXTENSIONS = set(['txt', 'mp4', 'avi'])
+ALLOWED_EXTENSIONS = set(['mp4', 'avi'])
+CLASSIFIER_LOCATION = os.environ.get("CLASSIFIER_LOCATION")
 
 
 # S3 Config
