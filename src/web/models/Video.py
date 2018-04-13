@@ -1,4 +1,4 @@
-from DB import db
+from web.DB import db
 
 class Video(db.Model):
     # TODO: Remove RPE

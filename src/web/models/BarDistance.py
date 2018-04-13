@@ -1,4 +1,4 @@
-from DB import db
+from web.DB import db
 
 class BarDistance(db.Model):
     __tablename__ = "BarDistance"

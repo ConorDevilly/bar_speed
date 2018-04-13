@@ -16,7 +16,7 @@ class BarbellTracker:
             String: tracking_algo: The algorithm to use for tracking. Can be any supported by OpenCV
             Boolean: debug_mode: Whether do display debug information or not
         """
-        self.tracker = cv2.Tracker_create(tracking_algo)
+	self.tracker = cv2.TrackerMedianFlow.create()
         self.debug_mode = debug_mode
         logging.basicConfig(filename='track_barbell.log', level=logging.DEBUG)
 
@@ -26,7 +26,10 @@ class BarbellTracker:
         Params:
             cv2.Image: frame: Frame to initialise tracker on
             List: init_pos: Position to track in form: [x, y, width, height]
+	Returns:
+	    distance_list: A list of distances the object moved in each frame of the video
         """
+	distance_list = []
         self.tracker.init(frame, tuple(init_pos))
         init_center_pos = int((init_pos[3] / 2) + init_pos[1])
 
@@ -55,6 +58,7 @@ class BarbellTracker:
 
             # Log distance moved
             distance_moved = init_center_pos - current_center_pos
+	    distance_list.append(distance_moved)
             logging.info('Frame {}. Distance moved: {}'.format(frame_ctr, distance_moved))
 
             if self.debug_mode:
@@ -77,6 +81,7 @@ class BarbellTracker:
 
         # Stop video when finished
         self.video.release()
+	return distance_list
 
     def detect_barbell_pos(self, classifier):
         """
